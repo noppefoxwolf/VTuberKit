@@ -102,7 +102,9 @@ extension AvatarView: FaceTrackingDelegate {
             }
 
             let humanoid = self.avatar.humanoid
-            humanoid.node(for: .neck)?.simdOrientation = trackingData.neckQuaternion.inverse
+            var orientation = trackingData.neckQuaternion.inverse
+            orientation.vector.y *= -1
+            humanoid.node(for: .neck)?.simdOrientation = orientation
         }
     }
 
