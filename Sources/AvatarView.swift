@@ -18,6 +18,7 @@ open class AvatarView: SCNView {
     open var isMouthTrackingEnabled = true
 
     let faceTracking = FaceTracking()
+    let micTracking = MicTracking()
 
     public override init(frame: CGRect, options: [String : Any]? = nil) {
         super.init(frame: frame, options: options)
@@ -36,6 +37,7 @@ open class AvatarView: SCNView {
 
     func commonInit() {
         faceTracking.delegate = self
+        micTracking.delegate = self
     }
 
     public func loadModel(withName name: String) throws {
@@ -76,12 +78,14 @@ open class AvatarView: SCNView {
         cameraNode.rotation = SCNVector4(0, 1, 0, Float.pi)
     }
 
-    public func startFaceTracking() {
+    public func startTracking() {
         faceTracking.start()
+        micTracking.start()
     }
 
-    public func stopFaceTracking() {
+    public func stopTracking() {
         faceTracking.stop()
+        micTracking.stop()
     }
 }
 
@@ -95,12 +99,11 @@ extension AvatarView: FaceTrackingDelegate {
                 self.avatar.setBlendShape(value: 0, for: .preset(.blinkL))
                 self.avatar.setBlendShape(value: 0, for: .preset(.blinkR))
             }
-            if self.isMouthTrackingEnabled {
-                self.avatar.setBlendShape(value: CGFloat(trackingData.mouth), for: .preset(.a))
-            } else {
-                self.avatar.setBlendShape(value: 0, for: .preset(.a))
-            }
-
+//            if self.isMouthTrackingEnabled {
+//                self.avatar.setBlendShape(value: CGFloat(trackingData.mouth), for: .preset(.a))
+//            } else {
+//                self.avatar.setBlendShape(value: 0, for: .preset(.a))
+//            }
             let humanoid = self.avatar.humanoid
             var orientation = trackingData.neckQuaternion.inverse
             orientation.vector.y *= -1
@@ -110,5 +113,13 @@ extension AvatarView: FaceTrackingDelegate {
 
     public func didFinishFaceTracking(_ faceTracking: FaceTracking) {
         // TODO/FIXME:
+    }
+}
+
+extension AvatarView: MicTrackingDelegate {
+    public func micTracking(_ micTracking: MicTracking, didUpdate volume: Float) {
+        DispatchQueue.main.async {
+            self.avatar.setBlendShape(value: CGFloat(volume), for: .preset(.a))
+        }
     }
 }
