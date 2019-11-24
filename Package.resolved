@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "VRMKit",
+        "repositoryURL": "git@github.com:noppefoxwolf/VRMKit.git",
+        "state": {
+          "branch": "feature/swiftpm",
+          "revision": "2720689cb77870fdcec647fa85e615f523d5bc16",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}
